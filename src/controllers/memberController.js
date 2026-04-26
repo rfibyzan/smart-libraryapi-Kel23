@@ -1,7 +1,6 @@
 import { MemberModel } from '../models/memberModel.js';
 
 export const MemberController = {
-  // Mendapatkan semua daftar anggota
   async getAllMembers(req, res) {
     try {
       const members = await MemberModel.getAll();
@@ -11,7 +10,16 @@ export const MemberController = {
     }
   },
 
-  // Mendaftarkan anggota baru
+  async getMemberById(req, res) {
+    try {
+      const member = await MemberModel.getById(req.params.id);
+      if (!member) return res.status(404).json({ message: 'Member not found' });
+      res.json(member);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
   async registerMember(req, res) {
     try {
       const newMember = await MemberModel.create(req.body);
@@ -21,6 +29,26 @@ export const MemberController = {
       });
     } catch (err) {
       res.status(400).json({ error: err.message });
+    }
+  },
+
+  async updateMember(req, res) {
+    try {
+      const member = await MemberModel.update(req.params.id, req.body);
+      if (!member) return res.status(404).json({ message: 'Member not found' });
+      res.json(member);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  async deleteMember(req, res) {
+    try {
+      const member = await MemberModel.remove(req.params.id);
+      if (!member) return res.status(404).json({ message: 'Member not found' });
+      res.json({ message: 'Member deleted', data: member });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
   }
 };

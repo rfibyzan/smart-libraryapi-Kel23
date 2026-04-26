@@ -10,7 +10,6 @@ export const LoanController = {
         data: loan
       });
     } catch (err) {
-      // Jika stok habis atau ID salah, kirim status 400 (Bad Request)
       res.status(400).json({ error: err.message });
     }
   },
@@ -19,6 +18,19 @@ export const LoanController = {
     try {
       const loans = await LoanModel.getAllLoans();
       res.json(loans);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  // tambahan baru
+  async returnBook(req, res) {
+    try {
+      const result = await LoanModel.returnBook(req.params.id);
+      if (!result) {
+        return res.status(404).json({ message: 'Loan not found or already returned' });
+      }
+      res.json({ message: 'Buku berhasil dikembalikan!' });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
